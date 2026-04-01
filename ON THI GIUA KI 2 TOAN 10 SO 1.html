@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đề Ôn Tập Cuối HK2 - Toán 10 (Full)</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; color: #333; line-height: 1.6; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #1a73e8; border-bottom: 2px solid #e8eaed; padding-bottom: 10px; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #5f6368; font-style: italic; margin-bottom: 25px; }
+        .part-badge { display: inline-block; background: #d93025; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; margin-bottom: 15px; font-size: 0.9em; }
+        .quiz-header { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 20px; color: #1a73e8; background: #e8f0fe; padding: 12px 20px; border-radius: 8px; font-size: 1.1em; }
+        .question-container { margin-bottom: 30px; min-height: 250px; }
+        .question-text { font-size: 1.15em; margin-bottom: 20px; font-weight: bold; }
+        
+        /* MC Styles */
+        .mc-options { list-style-type: none; padding: 0; }
+        .mc-options li { margin-bottom: 15px; }
+        .mc-label { display: flex; align-items: center; padding: 15px; background: #f8f9fa; border: 1px solid #dadce0; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
+        .mc-label:hover { background: #e8eaed; }
+        .mc-radio { margin-right: 15px; transform: scale(1.2); cursor: pointer; }
+
+        /* TF Styles */
+        .tf-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .tf-table th, .tf-table td { border: 1px solid #dadce0; padding: 15px; text-align: left; }
+        .tf-table th { background-color: #f8f9fa; }
+        .tf-table td.center { text-align: center; width: 80px; }
+        .tf-radio { transform: scale(1.4); cursor: pointer; }
+
+        /* SA Styles */
+        .sa-container { margin-top: 20px; padding: 25px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dadce0; }
+        .sa-input { width: 100%; padding: 15px; font-size: 1.1em; border: 2px solid #1a73e8; border-radius: 5px; box-sizing: border-box; outline: none; }
+        .sa-input:focus { border-color: #d93025; }
+
+        /* Buttons */
+        .btn-container { display: flex; justify-content: space-between; margin-top: 20px; border-top: 1px solid #e8eaed; padding-top: 20px; }
+        button { padding: 12px 25px; font-size: 1em; color: #fff; background-color: #1a73e8; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        button:hover { background-color: #1557b0; }
+        button:disabled { background-color: #dadce0; cursor: not-allowed; }
+        .btn-submit { background-color: #34a853; font-size: 1.1em; }
+        .btn-submit:hover { background-color: #2b8441; }
+        
+        /* Result Styles */
+        #result-container { display: none; }
+        .score-display { text-align: center; font-size: 1.5em; font-weight: bold; color: #d93025; margin-bottom: 30px; background: #fce8e6; padding: 20px; border-radius: 8px; }
+        .review-box { background: #fff; border: 1px solid #dadce0; border-top: 5px solid #1a73e8; padding: 20px; margin-bottom: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .explanation { margin-top: 15px; padding: 15px; background-color: #e8f0fe; border-radius: 5px; font-style: italic; color: #0d47a1; }
+        .status-correct { color: #34a853; font-weight: bold; }
+        .status-incorrect { color: #d93025; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>ĐỀ ÔN TẬP TOÁN 10 - CUỐI KỲ 2</h1>
+    <div class="subtitle">Đề số 1 - Thời gian làm bài: 90 phút</div>
+    
+    <div id="quiz-container">
+        <div id="part-badge" class="part-badge"></div>
+        <div class="quiz-header">
+            <span id="question-tracker"></span>
+            <span id="question-type-text"></span>
+        </div>
+        
+        <div class="question-container" id="dynamic-question-area">
+            </div>
+        
+        <div class="btn-container">
+            <button id="btn-prev" onclick="prevQuestion()">&#9664; Câu trước</button>
+            <button id="btn-next" onclick="nextQuestion()">Câu tiếp &#9654;</button>
+            <button id="btn-submit" class="btn-submit" style="display: none;" onclick="submitQuiz()">Nộp bài thi</button>
+        </div>
+    </div>
+
+    <div id="result-container">
+        <div id="score-display" class="score-display"></div>
+        <h2 style="color: #1a73e8; border-bottom: 2px solid #e8eaed; padding-bottom: 10px;">Chi tiết bài làm:</h2>
+        <div id="review-container"></div>
+    </div>
+</div>
+
+<script>
+    // Dữ liệu toàn bộ 3 phần
+    const quizData = [
+        // --- PHẦN I ---
+        { part: "PHẦN I. TRẮC NGHIỆM 4 PHƯƠNG ÁN", title: "Câu 1", type: "mc", question: "Một bình đựng 4 quả cầu xanh và 6 quả cầu trắng. Chọn ngẫu nhiên 3 quả cầu. Xác suất để được 3 quả cầu toàn màu xanh là:", options: ["\\(\\frac{1}{20}\\)", "\\(\\frac{1}{30}\\)", "\\(\\frac{1}{15}\\)", "\\(\\frac{3}{10}\\)"], answer: 1, explanation: "Không gian mẫu: \\(C_{10}^3=120\\). Chọn 3 xanh: \\(C_{4}^3=4\\). Xác suất \\(P=\\frac{4}{120}=\\frac{1}{30}\\)." },
+        { part: "PHẦN I. TRẮC NGHIỆM 4 PHƯƠNG ÁN", title: "Câu 2", type: "mc", question: "Một hội đồng gồm 2 giáo viên và 3 học sinh được chọn từ một nhóm 5 giáo viên và 6 học sinh. Hỏi có bao nhiêu cách chọn hội đồng đó?", options: ["200.", "150.", "160.", "180."], answer: 0, explanation: "\\(C_5^2 \\cdot C_6^3 = 10 \\cdot 20 = 200\\) cách." },
+        { part: "PHẦN I. TRẮC NGHIỆM 4 PHƯƠNG ÁN", title: "Câu 3", type: "mc", question: "Tìm hệ số của \\(x^{2}y^{2}\\) trong khai triển nhị thức Niu-tơn của \\((x+2y)^{4}\\).", options: ["32.", "8.", "24.", "16."], answer: 2, explanation: "Số hạng tổng quát: \\(C_{4}^{k}x^{4-k}(2y)^{k}\\). Chọn k=2, hệ số: \\(C_{4}^{2} \\cdot 2^{2} = 24\\)." },
+        { part: "PHẦN I. TRẮC NGHIỆM 4 PHƯƠNG ÁN", title: "Câu 4", type: "mc", question: "Gieo một đồng tiền và một con súc sắc. Số phần tử của không gian mẫu là:", options: ["24.", "12.", "6.", "8."], answer: 1, explanation: "Đồng tiền (2 mặt) x súc sắc (6 mặt) = 12 phần tử." },
+        { part: "PHẦN I. TRẮC NGHIỆM 4 PHƯƠNG ÁN", title: "Câu 5", type: "mc", question: "Trong mặt phẳng tọa độ Oxy, cho đường thẳng \\(d:x+2y-3=0\\). Vectơ pháp tuyến của đường thẳng d là", options: ["\\(\\vec{n}=(1;2)\\)", "\\(\\vec{n}=(2;-1)\\)", "\\(\\vec{n}=(-2;3)\\)", "\\(\\vec{n}=(1;3)\\)"], answer: 0, explanation: "Hệ số của x, y trong PTTQ chính là tọa độ VTPT \\(\\vec{n}=(1;2)\\)." },
+        { part: "PHẦN I. TRẮC NGHIỆM 4 PHƯƠNG ÁN", title: "Câu 6", type: "mc", question: "Xác định vị trí tương đối của hai đường thẳng: \\(\\Delta_{1}:x-2y+1=0\\) và \\(\\Delta_{2}:-3x+6y-10=0\\).", options: ["Song song.", "Cắt nhau.", "Trùng nhau.", "Vuông góc nhau."], answer: 0, explanation: "Tỉ lệ: \\(\\frac{1}{-3} = \\frac{-2}{6} \\ne \\frac{1}{-10}\\) \\(\\Rightarrow\\) Song song." },
+        { part: "PHẦN I. TRẮC NGHIỆM 4 PHƯƠNG ÁN", title: "Câu 7", type: "mc", question: "Góc giữa hai đường thẳng \\(\\Delta_{1}:\\begin{cases}x=-1+2t\\\\ y=2+3t\\end{cases}\\) và \\(\\Delta_{2}:-5x-y+9=0\\) bằng", options: ["\\(135^{\\circ}\\)", "\\(45^{\\circ}\\)", "\\(30^{\\circ}\\)", "\\(60^{\\circ}\\)"], answer: 1, explanation: "\\(\\Delta_{1}\\) có VTPT \\(\\vec{n}_{1}=(3;-2)\\). \\(\\Delta_{2}\\) có VTPT \\(\\vec{n}_{2}=(-5;-1)\\). Tính cos góc giữa 2 VTPT được \\(\\frac{1}{\\sqrt{2}} \\Rightarrow 45^\\circ\\)." },
+        { part: "PHẦN I. TRẮC NGHIỆM 4 PHƯƠNG ÁN", title: "Câu 8", type: "mc", question: "Khoảng cách từ điểm \\(M(5;-1)\\) đến đường thẳng \\(\\Delta:3x+2y+13=0\\) là:", options: ["\\(\\frac{28}{\\sqrt{13}}\\)", "2.", "\\(2\\sqrt{13}\\)", "\\(\\frac{13}{\\sqrt{2}}\\)"], answer: 2, explanation: "\\(d = \\frac{|3(5) + 2(-1) + 13|}{\\sqrt{3^2+2^2}} = \\frac{26}{\\sqrt{13}} = 2\\sqrt{13}\\)." },
+        { part: "PHẦN I. TRẮC NGHIỆM 4 PHƯƠNG ÁN", title: "Câu 9", type: "mc", question: "Đường tròn tâm \\(I(-1;2)\\) và đi qua điểm \\(M(2;1)\\) có phương trình là:", options: ["\\(x^{2}+y^{2}+2x-4y-5=0\\)", "\\(x^{2}+y^{2}+2x-4y-3=0\\)", "\\(x^{2}+y^{2}-2x-4y-5=0\\)", "\\(x^{2}+y^{2}+2x+4y-5=0\\)"], answer: 0, explanation: "\\(R^2 = IM^2 = (2+1)^2 + (1-2)^2 = 10\\). PT: \\((x+1)^2+(y-2)^2=10 \\Leftrightarrow x^2+y^2+2x-4y-5=0\\)." },
+        { part: "PHẦN I. TRẮC NGHIỆM 4 PHƯƠNG ÁN", title: "Câu 10", type: "mc", question: "Cho elip có phương trình: \\(\\frac{x^{2}}{16}+\\frac{y^{2}}{9}=1.\\) Khi đó tọa độ tiêu điểm của elip là:", options: ["\\(F_{1}(-\\sqrt{7};0)\\), \\(F_{2}(\\sqrt{7};0)\\)", "\\(F_{1}(-16;0)\\), \\(F_{2}(16;0)\\)", "\\(F_{1}(-9;0)\\), \\(F_{2}(9;0)\\)", "\\(F_{1}(-4;0)\\), \\(F_{2}(4;0)\\)"], answer: 0, explanation: "\\(c^2 = a^2 - b^2 = 16 - 9 = 7 \\Rightarrow c=\\sqrt{7}\\)." },
+        { part: "PHẦN I. TRẮC NGHIỆM 4 PHƯƠNG ÁN", title: "Câu 11", type: "mc", question: "Elip (E): \\(\\frac{x^{2}}{25}+\\frac{y^{2}}{16}=1\\) có các đỉnh nằm trên trục lớn có tọa độ là:", options: ["\\((4;0);(-4;0)\\)", "\\((5;0);(-5;0)\\)", "\\((0;5);(0;-5)\\)", "\\((0;4); (0;-4)\\)"], answer: 1, explanation: "\\(a^2=25 \\Rightarrow a=5\\). Đỉnh trục lớn: \\(\\pm5;0\\)." },
+        { part: "PHẦN I. TRẮC NGHIỆM 4 PHƯƠNG ÁN", title: "Câu 12", type: "mc", question: "Giả sử ta dùng 5 màu để tô cho 3 nước khác nhau trên bản đồ và không có màu nào được dùng hai lần. Số các cách chọn là:", options: ["\\(\\frac{5!}{2!}\\)", "8.", "\\(\\frac{5!}{3!2!}\\)", "\\(5^{3}\\)"], answer: 0, explanation: "Chọn 3 từ 5 và có phân biệt thứ tự (tô màu các nước khác nhau) là chỉnh hợp \\(A_{5}^{3} = \\frac{5!}{2!}\\)." },
+
+        // --- PHẦN II ---
+        { part: "PHẦN II. TRẮC NGHIỆM ĐÚNG/SAI", title: "Câu 1", type: "tf", question: "Trong một lớp học có 20 học sinh nam và 24 học sinh nữ. Giáo viên cần chọn 2 học sinh:", subs: [{ id: "a", text: "a) Số cách chọn 2 bạn nam là \\(C_{20}^{2}\\).", ans: "D" }, { id: "b", text: "b) Số cách chọn 2 bạn làm hai việc khác nhau là \\(A_{24}^{2}\\)", ans: "S" }, { id: "c", text: "c) Số cách chọn 2 bạn không phân biệt nam, nữ là \\(C_{44}^{2}\\).", ans: "D" }, { id: "d", text: "d) Số cách chọn 2 bạn, trong đó có 1 nam và 1 nữ là 480 cách.", ans: "D" }], explanation: "a) Đúng. b) Sai (phải là \\(A_{44}^{2}\\)). c) Đúng. d) Đúng (\\(20 \\cdot 24 = 480\\))." },
+        { part: "PHẦN II. TRẮC NGHIỆM ĐÚNG/SAI", title: "Câu 2", type: "tf", question: "Gọi A là tập hợp các số tự nhiên có 2 chữ số nhỏ hơn 18. Lấy ra 1 số tự nhiên bất kỳ trong A:", subs: [{ id: "a", text: "a) Không gian mẫu \\(\\Omega=\\{10,11,12,13,14,15,16,17\\}\\).", ans: "D" }, { id: "b", text: "b) Gọi A là biến cố “lấy được số lẻ\". Ta có: \\(P(A)=\\frac{4}{5}\\)", ans: "S" }, { id: "c", text: "c) Gọi B là biến cố “lấy được số chia hết cho 3\". Ta có: \\(P(B)=\\frac{1}{4}\\)", ans: "D" }, { id: "d", text: "d) Gọi C là biến cố “lấy được số nguyên tố\". Ta có: \\(P(C)=\\frac{3}{8}\\)", ans: "D" }], explanation: "Tập A có 8 phần tử. b) Sai (xác suất là 4/8=1/2). c) Đúng (có số 12, 15). d) Đúng (có số 11, 13, 17)." },
+        { part: "PHẦN II. TRẮC NGHIỆM ĐÚNG/SAI", title: "Câu 3", type: "tf", question: "Cho hai đường thẳng \\(\\Delta_{1}:2x-y+2=0\\) và \\(\\Delta_{2}:\\begin{cases}x=1+3t\\\\ y=-2+4t\\end{cases}\\).", subs: [{ id: "a", text: "a) \\(\\Delta_{1}\\) có vectơ pháp tuyến \\(\\vec{n}=(2;-1)\\)", ans: "D" }, { id: "b", text: "b) \\(\\Delta_{2}\\) có vectơ pháp tuyến là \\(\\vec{n}=(3;4)\\)", ans: "S" }, { id: "c", text: "c) Phương trình tham số của \\(\\Delta_{1}\\) là \\(\\begin{cases}x=t\\\\ y=2+2t\\end{cases}\\)", ans: "D" }, { id: "d", text: "d) Phương trình tổng quát của \\(\\Delta_{2}\\) là \\(4x-3y-7=0\\)", ans: "S" }], explanation: "b) Sai (3;4 là VTCP, VTPT là 4;-3). d) Sai (PT đúng là 4x-3y-10=0)." },
+        { part: "PHẦN II. TRẮC NGHIỆM ĐÚNG/SAI", title: "Câu 4", type: "tf", question: "Cho đường tròn (C) có tâm \\(I(3;4)\\) và đi qua \\(O(0;0)\\):", subs: [{ id: "a", text: "a) Bán kính của đường tròn (C) là \\(R=5\\).", ans: "D" }, { id: "b", text: "b) Phương trình \\((C):(x-3)^{2}+(y-4)^{2}=25\\).", ans: "D" }, { id: "c", text: "c) Điểm \\(K(1;4)\\) nằm trên đường tròn.", ans: "S" }, { id: "d", text: "d) Đường thẳng \\(\\Delta:x-3y=0\\) tiếp xúc với (C).", ans: "S" }], explanation: "a, b) Đúng. c) Sai (Thay K vào PT không thỏa mãn). d) Sai (Khoảng cách từ tâm I đến d khác 5)." },
+
+        // --- PHẦN III ---
+        { part: "PHẦN III. TRẢ LỜI NGẮN", title: "Câu 1", type: "sa", question: "Một tổ có 5 nam và 4 nữ. Có bao nhiêu cách xếp tổ trên thành một hàng ngang sao cho giữa hai bạn nữ có đúng một bạn nam.", accepted: ["8640", "8.640", "8,640"], explanation: "Xếp 4 nữ có 4! cách. Có 3 khoảng trống xen giữa 4 nữ, xếp 3 nam vào có \\(A_5^3\\) cách. 2 nam còn lại xếp vào 2 đầu (có 3 cách phân bổ 2 nam này vào 2 đầu). Số cách: \\(3 \\cdot 5! \\cdot 4! = 8640\\)." },
+        { part: "PHẦN III. TRẢ LỜI NGẮN", title: "Câu 2", type: "sa", question: "Trong khai triển \\((2-x)^{n}\\) biết \\(C_{n}^{1}+C_{n}^{3}=15\\). Tìm hệ số của \\(x^{4}\\)?", accepted: ["10"], explanation: "Giải PT tổ hợp \\(C_n^1 + C_n^3 = 15 \\Rightarrow n=5\\). Số hạng chứa \\(x^4\\) là khi k=4. Hệ số: \\(C_{5}^{4} \\cdot 2^{1} \\cdot (-1)^{4} = 10\\)." },
+        { part: "PHẦN III. TRẢ LỜI NGẮN", title: "Câu 3", type: "sa", question: "Có 5 hành khách bước lên một đoàn tàu gồm 5 toa. Tính xác suất để 1 toa có 3 người, 1 toa có 2 người, 3 toa còn lại không có ai. (làm tròn đến hàng phần trăm)", accepted: ["0.06", "0,06"], explanation: "\\(n(\\Omega) = 5^5\\). \\(n(A) = C_5^1 \\cdot C_5^3 \\cdot C_4^1 \\cdot C_2^2 = 200\\). Xác suất \\(P = 200/3125 = 0,064 \\approx 0,06\\)." },
+        { part: "PHẦN III. TRẢ LỜI NGẮN", title: "Câu 4", type: "sa", question: "Giải bóng chuyền có 9 đội (6 ngoại, 3 VN). Chia ngẫu nhiên 3 bảng (mỗi bảng 3 đội). Tính xác suất để 3 đội VN ở 3 bảng khác nhau. (làm tròn đến hàng phần trăm)", accepted: ["0.32", "0,32"], explanation: "\\(n(\\Omega) = C_9^3 \\cdot C_6^3 \\cdot C_3^3 = 1680\\). Xếp 3 đội VN vào 3 bảng: 3! cách. Xếp 6 đội ngoại vào 3 bảng: \\(C_6^2 \\cdot C_4^2 \\cdot C_2^2 = 90\\) cách. \\(P = (6 \\cdot 90) / 1680 \\approx 0,32\\)." },
+        { part: "PHẦN III. TRẢ LỜI NGẮN", title: "Câu 5", type: "sa", question: "Trạm viễn thông S(-6; 16). Đường cao tốc \\(\\Delta: 8x-15y-1=0\\). Tính khoảng cách ngắn nhất để người đó đến trạm S.", accepted: ["17"], explanation: "\\(d(S,\\Delta) = \\frac{|8(-6) - 15(16) - 1|}{\\sqrt{8^2 + (-15)^2}} = \\frac{289}{17} = 17\\)." },
+        { part: "PHẦN III. TRẢ LỜI NGẮN", title: "Câu 6", type: "sa", question: "Gương elip: \\(1764x^{2}+a^{2}y^{2}=1764a^{2}\\) (cm). Tỷ lệ trục lớn/bé là \\(1,618\\). Kính giá 270 nghìn đồng/m². Tính số tiền kính (làm tròn đến hàng đơn vị).", accepted: ["242269", "242.269", "242,269", "242 269", "242098", "242.098", "242,098"], explanation: "PT \\(\\Rightarrow b=42\\) cm. \\(a = 42 \\cdot 1,618 = 67,956\\) cm. Diện tích \\(S = \\pi ab \\approx 0,89666\\) m². Số tiền \\(0,89666 \\cdot 270.000 \\approx 242.269\\) đồng." }
+    ];
+
+    let currentIdx = 0;
+    
+    // Khởi tạo mảng lưu đáp án
+    let userAnswers = quizData.map(q => {
+        if (q.type === 'mc') return null;
+        if (q.type === 'tf') return { a: null, b: null, c: null, d: null };
+        if (q.type === 'sa') return "";
+    });
+
+    const labels = ["A", "B", "C", "D"];
+    const dynamicArea = document.getElementById('dynamic-question-area');
+    const badge = document.getElementById('part-badge');
+    const tracker = document.getElementById('question-tracker');
+    const typeText = document.getElementById('question-type-text');
+    
+    function loadQuestion() {
+        const q = quizData[currentIdx];
+        badge.innerText = q.part;
+        tracker.innerText = `Câu ${currentIdx + 1} / ${quizData.length} (${q.title})`;
+        
+        let typeStr = "";
+        if(q.type === 'mc') typeStr = "Chọn 1 đáp án";
+        else if(q.type === 'tf') typeStr = "Đúng / Sai";
+        else typeStr = "Điền đáp án";
+        typeText.innerText = typeStr;
+
+        let html = `<div class="question-text">${q.question}</div>`;
+
+        // Render Multiple Choice
+        if (q.type === 'mc') {
+            html += `<ul class="mc-options">`;
+            q.options.forEach((opt, i) => {
+                const checked = userAnswers[currentIdx] === i ? 'checked' : '';
+                html += `<li>
+                    <label class="mc-label">
+                        <input type="radio" name="mc_ans" class="mc-radio" value="${i}" ${checked} onchange="saveMC(${i})">
+                        <strong>${labels[i]}.</strong> &nbsp; ${opt}
+                    </label>
+                </li>`;
+            });
+            html += `</ul>`;
+        } 
+        // Render True/False
+        else if (q.type === 'tf') {
+            html += `<table class="tf-table">
+                <tr><th>Phát biểu</th><th class="center">Đúng</th><th class="center">Sai</th></tr>`;
+            q.subs.forEach(sub => {
+                const checkedD = userAnswers[currentIdx][sub.id] === 'D' ? 'checked' : '';
+                const checkedS = userAnswers[currentIdx][sub.id] === 'S' ? 'checked' : '';
+                html += `<tr>
+                    <td>${sub.text}</td>
+                    <td class="center"><input type="radio" name="tf_${sub.id}" class="tf-radio" value="D" ${checkedD} onchange="saveTF('${sub.id}', 'D')"></td>
+                    <td class="center"><input type="radio" name="tf_${sub.id}" class="tf-radio" value="S" ${checkedS} onchange="saveTF('${sub.id}', 'S')"></td>
+                </tr>`;
+            });
+            html += `</table>`;
+        } 
+        // Render Short Answer
+        else if (q.type === 'sa') {
+            html += `<div class="sa-container">
+                <input type="text" class="sa-input" value="${userAnswers[currentIdx]}" placeholder="Nhập đáp án của bạn (VD: 0,06)" oninput="saveSA(this.value)">
+            </div>`;
+        }
+
+        dynamicArea.innerHTML = html;
+
+        // Xử lý nút bấm
+        document.getElementById('btn-prev').disabled = currentIdx === 0;
+        if (currentIdx === quizData.length - 1) {
+            document.getElementById('btn-next').style.display = 'none';
+            document.getElementById('btn-submit').style.display = 'inline-block';
+        } else {
+            document.getElementById('btn-next').style.display = 'inline-block';
+            document.getElementById('btn-submit').style.display = 'none';
+        }
+
+        // Render MathJax
+        if (window.MathJax) MathJax.typesetPromise([document.getElementById('quiz-container')]);
+    }
+
+    function saveMC(val) { userAnswers[currentIdx] = val; }
+    function saveTF(id, val) { userAnswers[currentIdx][id] = val; }
+    function saveSA(val) { userAnswers[currentIdx] = val.trim(); }
+
+    function nextQuestion() { if (currentIdx < quizData.length - 1) { currentIdx++; loadQuestion(); } }
+    function prevQuestion() { if (currentIdx > 0) { currentIdx--; loadQuestion(); } }
+
+    function submitQuiz() {
+        if (!confirm("Bạn đã kiểm tra kỹ đáp án và chắc chắn muốn nộp bài?")) return;
+
+        document.getElementById('quiz-container').style.display = 'none';
+        document.getElementById('result-container').style.display = 'block';
+        
+        let totalItems = 0;
+        let correctItems = 0;
+        const reviewBox = document.getElementById('review-container');
+        reviewBox.innerHTML = '';
+
+        quizData.forEach((q, idx) => {
+            const div = document.createElement('div');
+            div.className = 'review-box';
+            let html = `<div style="color: #5f6368; font-weight: bold; margin-bottom: 5px;">${q.part} - ${q.title}</div>`;
+            html += `<div style="font-weight: bold; font-size: 1.1em; margin-bottom: 10px;">${q.question}</div>`;
+
+            if (q.type === 'mc') {
+                totalItems++;
+                const isCorrect = userAnswers[idx] === q.answer;
+                if(isCorrect) correctItems++;
+                const userAnsText = userAnswers[idx] !== null ? labels[userAnswers[idx]] : "Chưa làm";
+                const status = isCorrect ? '<span class="status-correct">✔ Đúng</span>' : '<span class="status-incorrect">✘ Sai</span>';
+                
+                html += `<div><strong>Đáp án của bạn:</strong> ${userAnsText} - ${status}</div>`;
+                if (!isCorrect) html += `<div><strong>Đáp án chuẩn:</strong> <span class="status-correct">${labels[q.answer]}. ${q.options[q.answer]}</span></div>`;
+            } 
+            else if (q.type === 'tf') {
+                totalItems += 4;
+                html += `<table class="tf-table" style="font-size: 0.9em; margin-top: 10px;"><tr><th>Ý</th><th>Bạn chọn</th><th>Đáp án</th><th>KQ</th></tr>`;
+                q.subs.forEach(sub => {
+                    const isCorrect = userAnswers[idx][sub.id] === sub.ans;
+                    if(isCorrect) correctItems++;
+                    const uAns = userAnswers[idx][sub.id] || "-";
+                    const status = isCorrect ? '<span class="status-correct">✔</span>' : '<span class="status-incorrect">✘</span>';
+                    html += `<tr><td>${sub.text}</td><td class="center">${uAns}</td><td class="center">${sub.ans}</td><td class="center">${status}</td></tr>`;
+                });
+                html += `</table>`;
+            } 
+            else if (q.type === 'sa') {
+                totalItems++;
+                const isCorrect = q.accepted.includes(userAnswers[idx]);
+                if(isCorrect) correctItems++;
+                const status = isCorrect ? '<span class="status-correct">✔ Đúng</span>' : '<span class="status-incorrect">✘ Sai</span>';
+                html += `<div><strong>Đáp án của bạn:</strong> ${userAnswers[idx] || "Chưa làm"} - ${status}</div>`;
+                if (!isCorrect) html += `<div><strong>Đáp án chuẩn:</strong> <span class="status-correct">${q.accepted[0]}</span></div>`;
+            }
+
+            html += `<div class="explanation"><strong>Hướng dẫn giải:</strong><br>${q.explanation}</div>`;
+            div.innerHTML = html;
+            reviewBox.appendChild(div);
+        });
+
+        // Tính điểm hệ 10
+        const score10 = ((correctItems / totalItems) * 10).toFixed(2);
+        document.getElementById('score-display').innerHTML = `Điểm của bạn: ${score10} / 10<br><span style="font-size: 0.6em; color: #5f6368; font-weight: normal;">(Hoàn thành đúng ${correctItems} / ${totalItems} ý)</span>`;
+
+        if (window.MathJax) MathJax.typesetPromise([document.getElementById('result-container')]);
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>
